@@ -1,27 +1,37 @@
 package jm.task.core.jdbc.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Environment;
+
+import java.util.Properties;
 
 public class Util {
-    // реализуйте настройку соеденения с БД
+    private static SessionFactory sessionFactory;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/bdforkata";
-    private static final String USER = "root";
-    private static final String PASSWORD = "1991_Dvs";
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            try {
+                Configuration configuration = new Configuration();
 
-    public static Connection getConnection() {
+                Properties settings = new Properties();
+                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/bdforkata?useSSL=false");
+                settings.put(Environment.USER, "root");
+                settings.put(Environment.PASS, "1991_Dvs");
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+                settings.put(Environment.SHOW_SQL, "true");
+                settings.put(Environment.HBM2DDL_AUTO, "update");
 
-        Connection connection = null;
+                configuration.setProperties(settings);
+                configuration.addAnnotatedClass(jm.task.core.jdbc.model.User.class);
 
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Соедиение с БД установленно");
-        } catch (SQLException e) {
-            System.out.println("Не удалось соединиться с БД");
-            throw new RuntimeException(e);
+                sessionFactory = configuration.buildSessionFactory();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Error building SessionFactory");
+            }
         }
-        return connection;
+        return sessionFactory;
     }
 }
