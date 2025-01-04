@@ -1,39 +1,32 @@
 package jm.task.core.jdbc;
 
-import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
-import jm.task.core.jdbc.util.Util;
-
-import static jm.task.core.jdbc.util.Util.getSessionFactory;
-
 
 public class Main {
 
     public static void main(String[] args) {
 
-        UserServiceImpl userServiceImpl =
-                new UserServiceImpl(new jm.task.core.jdbc.dao.UserDaoHibernateImpl(Util.getSessionFactory()));
+        UserService userService = new UserServiceImpl();
 
-        // Создание таблицы
-        userServiceImpl.createUsersTable();
+        userService.createUsersTable();
 
-        // Добавление пользователей
-        userServiceImpl.saveUser("Иван", "Иванов", (byte) 25);
-        userServiceImpl.saveUser("Пётр", "Петров", (byte) 30);
-        userServiceImpl.saveUser("Анна", "Сидорова", (byte) 28);
-
-        // Получение и вывод всех пользователей
-        for (User user : userServiceImpl.getAllUsers()) {
-            System.out.println(user);
-        }
-
-        // Очистка таблицы
-//        userServiceImpl.cleanUsersTable();
-//
-//        // Удаление таблицы
-//        userServiceImpl.dropUsersTable();
-
+        userService.saveUser("Pierre", "Curie", (byte) 46);
+        userService.saveUser("Maria", "Curie", (byte) 66);
+        userService.getAllUsers().forEach(user -> System.out.println("Пользователь: " + user.getName() +
+                " " + user.getLastName() + ", возраст: " + user.getAge() + ", id: " + user.getId()));
+        userService.removeUserById(1);
+        userService.getAllUsers().forEach(user -> System.out.println("Пользователь: " + user.getName() +
+                " " + user.getLastName() + ", возраст: " + user.getAge() + ", id: " + user.getId()));
+        userService.cleanUsersTable();
+        userService.saveUser("Verner", "Heisenberg", (byte) 74);
+        userService.getAllUsers().forEach(user -> System.out.println("Пользователь: " + user.getName() +
+                " " + user.getLastName() + ", возраст: " + user.getAge() + ", id: " + user.getId()));
+        userService.dropUsersTable();
+        userService.createUsersTable();
+        userService.saveUser("Niels", "Bohr", (byte) 77);
+        userService.getAllUsers().forEach(user -> System.out.println("Пользователь: " + user.getName() +
+                " " + user.getLastName() + ", возраст: " + user.getAge() + ", id: " + user.getId()));
 
     }
 

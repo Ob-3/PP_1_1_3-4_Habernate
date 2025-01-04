@@ -7,7 +7,8 @@ import org.hibernate.cfg.Environment;
 import java.util.Properties;
 
 public class Util {
-    private static SessionFactory sessionFactory;
+
+    private static SessionFactory sessionFactory = null;
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
@@ -27,6 +28,7 @@ public class Util {
                 configuration.addAnnotatedClass(jm.task.core.jdbc.model.User.class);
 
                 sessionFactory = configuration.buildSessionFactory();
+                System.out.println("DB connection established");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("Error building SessionFactory");
